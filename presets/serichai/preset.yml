@@ -3,7 +3,7 @@ schema_version: "1.0"
 preset:
   id: "serichai"
   name: "Serichai Workflow"
-  version: "1.1.0"
+  version: "1.2.0"
   description: "Stack-neutral additions: design.md review step, simple/surgical/verifiable principle, verifiable tasks"
   author: "jayjirakrit"
   repository: "https://github.com/jayjirakrit/jy-spec-kit"
