@@ -1,0 +1,49 @@
+schema_version: "1.0"
+
+preset:
+  id: "serichai"
+  name: "Serichai Workflow"
+  version: "1.0.0"
+  description: "Stack-neutral additions: design.md review step, simple/surgical/verifiable principle, verifiable tasks"
+  author: "jayjirakrit"
+  repository: "https://github.com/jayjirakrit/jy-spec-kit"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=1.1.0"
+
+provides:
+  templates:
+    - type: "template"
+      name: "design-template"
+      file: "templates/design-template.md"
+      description: "design.md: key implementation snippets for architect review at the plan gate"
+
+    - type: "template"
+      name: "constitution-template"
+      file: "templates/constitution-addendum.md"
+      description: "Adds the Simple, Surgical, Verifiable Changes principle"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.plan"
+      file: "commands/speckit.plan-addendum.md"
+      description: "Adds the design.md step to plan"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.tasks"
+      file: "commands/speckit.tasks-addendum.md"
+      description: "Requires a verification check per task"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.implement"
+      file: "commands/speckit.implement-addendum.md"
+      description: "Applies the surgical-change rule during implementation"
+      strategy: "append"
+
+tags:
+  - "workflow"
+  - "design-review"
+  - "karpathy"
