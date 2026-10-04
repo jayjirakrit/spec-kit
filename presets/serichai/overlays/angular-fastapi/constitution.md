@@ -194,7 +194,8 @@ refactors, reformatting, or cleanup of unrelated code (mention it instead). Matc
 surrounding style. Open assumptions MUST be surfaced (in `spec.md` via
 `/speckit-clarify`, or in the implementer's report) rather than silently guessed.
 Every task in `tasks.md` MUST state how it is verified (a command, test, or observable
-behavior) in a few words, and is done only when that check passes.
+behavior) in a few words, and is done only when that check passes. A feature is done only when its
+`quality-report.md` verdict (written by the quality engineer) is PASS or PASS WITH NOTES.
 
 Rationale: Most LLM-assisted coding failures are overbuilding, collateral edits, and
 unstated guesses; naming a concrete check per task makes "done" falsifiable.
@@ -217,7 +218,9 @@ Read by the `backend-engineer`, `frontend-engineer` and `solution-architect` age
 - **Reference code**: `backend/routers/accounts.py`,
   `backend/services/accounts_service.py`,
   `backend/services/payroll_reconcile_service.py`; tests in `backend/tests/`.
-- **Quality gates**: type hints honored; tests for business logic.
+- **Quality gates**: type hints honored; `pytest` (from `backend/`) passes.
+- **Test patterns**: `backend/tests/test_<topic>.py`, pytest, shared fixtures in
+  `backend/tests/conftest.py` and `backend/tests/fixtures/`.
 - **Verification**: run `uvicorn main:app --reload` and call the endpoint.
 
 ### Area: frontend — role: frontend
@@ -236,6 +239,9 @@ Read by the `backend-engineer`, `frontend-engineer` and `solution-architect` age
 - **Reference code**: `src/app/core/http/api-call.ts`,
   `src/app/features/employee-benefits/`, `src/styles.css`.
 - **Quality gates**: `ng build`, `ng lint`, `ng test --watch=false` must pass.
+- **Test patterns**: `*.spec.ts` next to the file under test, Vitest via `ng test`;
+  services use `HttpTestingController` asserting URL and exact field names; components
+  get smoke specs.
 - **Verification**: `npm start` with uvicorn running; exercise golden path and edge
   cases in a browser.
 

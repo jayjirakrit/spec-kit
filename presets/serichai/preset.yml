@@ -3,7 +3,7 @@ schema_version: "1.0"
 preset:
   id: "serichai"
   name: "Serichai Workflow"
-  version: "1.0.0"
+  version: "1.1.0"
   description: "Stack-neutral additions: design.md review step, simple/surgical/verifiable principle, verifiable tasks"
   author: "jayjirakrit"
   repository: "https://github.com/jayjirakrit/jy-spec-kit"
@@ -26,6 +26,12 @@ provides:
       strategy: "append"
 
     - type: "command"
+      name: "speckit.specify"
+      file: "commands/speckit.specify-addendum.md"
+      description: "Delegates spec writing to the business-analyst agent"
+      strategy: "append"
+
+    - type: "command"
       name: "speckit.plan"
       file: "commands/speckit.plan-addendum.md"
       description: "Adds the design.md step to plan"
@@ -40,7 +46,7 @@ provides:
     - type: "command"
       name: "speckit.implement"
       file: "commands/speckit.implement-addendum.md"
-      description: "Applies the surgical-change rule during implementation"
+      description: "Surgical-change rule, engineer delegation and quality-engineer verification"
       strategy: "append"
 
 tags:

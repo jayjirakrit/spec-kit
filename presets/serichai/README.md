@@ -17,6 +17,19 @@ cp /path/to/jy-spec-kit/presets/serichai/agents/*.md .claude/agents/   # generic
 
 Presets don't register agents, so the copy step is manual.
 
+## Agents
+
+| Agent | Stage | Role |
+|-------|-------|------|
+| `business-analyst` | `/speckit-specify` | Writes `spec.md` in business language only, validates it, returns clarification questions |
+| `solution-architect` | `/speckit-plan` | plan, research, data model, contracts, `design.md` |
+| `backend-engineer` / `frontend-engineer` | `/speckit-implement` | Implement tasks in their area |
+| `quality-engineer` | end of `/speckit-implement` | Coverage matrix, writes missing tests, runs gates, reviews diff, writes `quality-report.md` (never edits production code) |
+
+The specify and implement addenda delegate to these agents when they exist and fall back
+to inline execution otherwise. If you use the `speckit` workflow, add a gate after
+`implement` to review `quality-report.md` (presets cannot change workflows).
+
 ## Agents are stack-neutral
 
 `backend-engineer`, `frontend-engineer` and `solution-architect` hold no framework
