@@ -1,212 +1,139 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/github/spec-kit/main/media/logo_large.webp" alt="Spec Kit Logo" width="200" height="200"/>
-    <h1>🌱 Spec Kit</h1>
-    <h3><em>Build with a spec, fix a bug, or assess an idea — with your coding agent.</em></h3>
+    <img src="https://raw.githubusercontent.com/github/spec-kit/main/media/logo_large.webp" alt="Spec Kit Logo" width="160" height="160"/>
+    <h1>Spec Kit — Serichai custom framework</h1>
+    <h3><em>Spec-Driven Development with role agents, a design review gate, and verifiable, surgical changes.</em></h3>
 </div>
 
-<p align="center">
-    <a href="https://github.com/github/spec-kit/releases/latest"><img src="https://img.shields.io/github/v/release/github/spec-kit" alt="Latest Release"/></a>
-    <a href="https://github.com/github/spec-kit/stargazers"><img src="https://img.shields.io/github/stars/github/spec-kit?style=social" alt="GitHub stars"/></a>
-    <a href="https://github.com/github/spec-kit/blob/main/LICENSE"><img src="https://img.shields.io/github/license/github/spec-kit" alt="License"/></a>
-    <a href="https://github.github.io/spec-kit/"><img src="https://img.shields.io/badge/docs-GitHub_Pages-blue" alt="Documentation"/></a>
-</p>
+This repository is a fork of [github/spec-kit](https://github.com/github/spec-kit).
+The `serichai/custom` branch adds the **`serichai` preset** (v1.2.0, requires
+Spec Kit >= 1.1.0) in [`presets/serichai/`](./presets/serichai/). Everything else
+is upstream Spec Kit, unchanged.
 
-<p align="center">
-    <strong>English</strong> ·
-    <a href="./README.zh-CN.md">简体中文</a> ·
-    <a href="./README.ja.md">日本語</a>
-</p>
+## What this fork adds
 
-Spec Kit is an open source toolkit that gives AI coding agents structured
-processes, reusable templates, and documented outcomes. Start with one of the
-three processes below, customize it, or bring your own.
+- **Design review gate** — `/speckit-plan` also writes `design.md`: a 250–400 line
+  sketch of the key implementation files, for an architect to review before tasks are
+  generated.
+- **Simple, Surgical, Verifiable principle** — appended to the constitution: no
+  speculative features, touch only what the task needs, surface assumptions.
+- **Verifiable tasks** — every task in `tasks.md` ends with a `Verify:` note (command,
+  test, or observable behavior) and is done only when that check passes.
+- **Technology Standards** — a constitution section with one entry per area (path,
+  stack, constraints, reference code, quality gates, verification). Agents read it
+  instead of hard-coding a framework, so the preset is stack-neutral.
+- **Role agents** — business analyst, solution architect, backend/frontend engineers
+  and a quality engineer. The Spec Kit commands delegate to them when they're installed
+  and run inline otherwise.
+- **Quality gate** — a feature is done only when `quality-report.md` says PASS or
+  PASS WITH NOTES.
 
-## Choose your process
+## Workflow
 
-| What you need | Process | Outcome |
-| --- | --- | --- |
-| Build a feature or application | [Spec-Driven Development](#spec-driven-development) | A specification carried through planning, implementation, and convergence |
-| Diagnose and repair broken behavior | [Bug fixing](#bug-fixing) | An assessed cause, scoped fix, and recorded verification |
-| Decide whether an idea deserves investment | [Idea assessment](#idea-assessment) | An evidence-backed go, clarify, or stop decision |
+```text
+constitution → specify → plan (+ design.md) → tasks → implement → quality review
+```
 
-These are **independent entry points**, not three mandatory phases. SDD ships in
-core; bug fixing and assessment are bundled extensions you install when needed.
+| Command | Agent | Output | Serichai addition |
+| --- | --- | --- | --- |
+| `/speckit-constitution` | — | `constitution.md` | Simple/Surgical/Verifiable principle, Technology Standards section |
+| `/speckit-specify` | `business-analyst` | `spec.md`, `checklists/requirements.md` | Spec in business language only; clarification questions returned to you |
+| `/speckit-plan` | `solution-architect` | `plan.md`, `research.md`, `data-model.md`, `contracts/`, `design.md` | `design.md` review step |
+| `/speckit-tasks` | — | `tasks.md` | `Verify:` note required on every task |
+| `/speckit-implement` | `backend-engineer`, `frontend-engineer` | code | Tasks routed by area; surgical-change rule |
+| (end of implement) | `quality-engineer` | `quality-report.md` | Acceptance, quality and security review; one fix round on FAIL |
 
-<a id="-get-started"></a>
-<a id="-prerequisites"></a>
+Review each artifact before running the next command. The plan gate (`design.md`) is
+the main place to catch wrong approaches before any code is written.
 
-## Get started
-
-You need **Python 3.11+**, **[uv](https://github.github.io/spec-kit/install/uv.html)**,
-and a supported AI coding agent on Linux, macOS, or Windows.
-For **CLI setup only**, run this in your terminal to install Spec Kit and create a project:
+## Install
 
 ```bash
+# 1. Spec Kit CLI and this fork
 uv tool install specify-cli
-specify init my-project --integration copilot
-cd my-project
+git clone -b serichai/custom https://github.com/jayjirakrit/jy-spec-kit.git
+
+# 2. In your project
+specify init --here --integration claude
+specify preset add --dev /path/to/jy-spec-kit/presets/serichai
+cp /path/to/jy-spec-kit/presets/serichai/agents/*.md .claude/agents/
 ```
 
-<a id="-supported-ai-coding-agent-integrations"></a>
+Then run `/speckit-constitution` in your agent and fill in the **Technology Standards**
+section for your stack. If it is missing, the engineer and architect agents stop and
+report instead of guessing.
 
-The examples use **GitHub Copilot's default skills mode**. Replace `copilot` with
-your [integration key](https://github.github.io/spec-kit/reference/integrations.html)
-to use another supported agent.
+Presets can't register agents or change workflows, so copying the agents is manual. If
+you use the `speckit` workflow, add a gate after `implement` to review
+`quality-report.md`.
 
-Already have code? Follow the
-[existing-project guide](https://github.github.io/spec-kit/guides/existing-projects.html).
-For pinned releases, other installers, CI, or troubleshooting, see
-[Installation](https://github.github.io/spec-kit/installation.html).
-To update an existing installation, see [Upgrade](https://github.github.io/spec-kit/upgrade.html).
+## Agents
 
-Now **launch your coding agent in the project directory** and choose a process
-below. Invoke each `/speckit-*` **skill in your agent's chat**, one at a time,
-and review the result before continuing. These are agent skills, not terminal
-commands. Other agents and modes may use
-[different invocation syntax](https://github.github.io/spec-kit/reference/integrations.html#command-invocation).
+| Agent | Stage | Does | Never |
+| --- | --- | --- | --- |
+| `business-analyst` | specify | Writes and validates `spec.md` in business language | Plans, technical artifacts, code |
+| `solution-architect` | plan | Plan, research, data model, contracts, `design.md` | `spec.md`, production code |
+| `backend-engineer` | implement | Tasks whose files are all in a *backend* area | Files outside its area |
+| `frontend-engineer` | implement | Tasks whose files are all in a *frontend* area | Files outside its area |
+| `quality-engineer` | after implement | Checks acceptance criteria, reviews quality and security, runs gates, writes a concise `quality-report.md` | Writing tests or code |
 
-<a id="-what-is-spec-driven-development"></a>
-<a id="sdd-quickstart"></a>
+Tasks spanning several areas, or touching specs, root config or docs, run in the main
+agent thread.
 
-## Spec-Driven Development
+## Angular + FastAPI example
 
-Define **what and why** before deciding **how** to build it. SDD turns your
-requirements into a specification, a technical plan, and actionable tasks,
-then guides implementation against those artifacts.
+[`presets/serichai/overlays/angular-fastapi/`](./presets/serichai/overlays/angular-fastapi/)
+is a worked example for an Angular SPA + FastAPI backend:
 
-**Constitution once per project; specify → plan → tasks → implement → converge per feature.**
+- `constitution.md` — a filled-in constitution with Angular and FastAPI Technology
+  Standards.
+- `templates/plan-template.md`, `templates/contracts-template.md` — plan and API
+  contract templates with mandatory contracts. Copy them to
+  `.specify/templates/overrides/` in your project.
 
-Invoke these skills in your agent's chat:
+Use it as a starting point and edit paths and rules for your project.
+
+## Preset layout
 
 ```text
-/speckit-constitution Create principles focused on code quality, testing, and maintainability.
-/speckit-specify Build a photo organizer with albums grouped by date and a tile preview of each album.
-/speckit-plan Use Vite with vanilla JavaScript. Keep images local and store metadata in SQLite.
-/speckit-tasks
-/speckit-implement
-/speckit-converge
+presets/serichai/
+├── preset.yml                  # preset manifest
+├── agents/                     # role agents (copy to .claude/agents/)
+├── commands/                   # addenda appended to specify / plan / tasks / implement
+├── templates/
+│   ├── design-template.md      # design.md
+│   └── constitution-addendum.md
+└── overlays/angular-fastapi/   # filled-in example for one stack
 ```
 
-Repeat **implement → converge** until convergence reports **Converged**.
-Add clarification, checklists, and consistency analysis when you need extra
-quality gates.
+## Original Spec Kit
 
-[SDD walkthrough](https://github.github.io/spec-kit/quickstart.html) ·
-[Command reference](https://github.github.io/spec-kit/reference/agentic-sdd.html)
+[Spec Kit](https://github.com/github/spec-kit) is GitHub's open source toolkit for
+**Spec-Driven Development (SDD)**: define *what and why* before *how*, then let an AI
+coding agent carry a specification through planning, tasks and implementation. It
+works with Claude Code, GitHub Copilot and other agents through `/speckit-*` skills.
 
-<a id="-bug-fixing-with-spec-kit"></a>
-<a id="bug-fix-quickstart"></a>
+Core flow: a constitution once per project, then per feature:
 
-## Bug fixing
+```text
+/speckit-specify → /speckit-plan → /speckit-tasks → /speckit-implement → /speckit-converge
+```
 
-Keep diagnosis, repair, and verification separate so the agent fixes the assessed
-cause and checks the original symptom. No SDD feature workflow is required first.
+Optional quality steps: `/speckit-clarify`, `/speckit-checklist`, `/speckit-analyze`.
+Opt-in extensions add **bug fixing** (`specify extension add bug`: assess → fix → test)
+and **idea assessment** (`specify extension add assess`: intake → research → decide).
 
-**CLI setup (terminal):** install the opt-in extension from the project directory:
+- [Documentation](https://github.github.io/spec-kit/) ·
+  [SDD quickstart](https://github.github.io/spec-kit/quickstart.html) ·
+  [Full methodology](./spec-driven.md)
+- [Customization: extensions, presets, workflows](https://github.github.io/spec-kit/guides/customization.html)
+
+## Syncing with upstream
 
 ```bash
-specify extension add bug
+git fetch upstream
+git rebase upstream/main   # on serichai/custom; custom work lives only in presets/serichai/
 ```
 
-Then invoke the **assess → fix → test** skills in your agent's chat:
+## License
 
-```text
-/speckit-bug-assess "Submitting an empty password crashes the login form." slug=login-crash
-/speckit-bug-fix slug=login-crash
-/speckit-bug-test slug=login-crash
-```
-
-The reports live in `.specify/bugs/login-crash/`. Review the final verdict:
-`verified`, `partial`, or `failed`. Missing verification is not a successful fix.
-
-[Bug-fixing walkthrough](https://github.github.io/spec-kit/guides/bugfix.html) ·
-[Command reference](https://github.github.io/spec-kit/reference/agentic-bugfix.html)
-
-<a id="-assessing-ideas-with-spec-kit"></a>
-<a id="idea-assessment-quickstart"></a>
-
-## Idea assessment
-
-Gather evidence before committing to an idea, whether or not it becomes software.
-This standalone process works even in a project with no source code.
-
-**CLI setup (terminal):** install the opt-in extension from the project directory:
-
-```bash
-specify extension add assess
-```
-
-Then invoke the **intake → research → define → shape → decide** skills in your agent's chat:
-
-```text
-/speckit-assess-intake "Let users work offline and sync when they reconnect." slug=offline-mode
-/speckit-assess-research slug=offline-mode
-/speckit-assess-define slug=offline-mode
-/speckit-assess-shape slug=offline-mode
-/speckit-assess-decide slug=offline-mode
-```
-
-The artifacts live in `.specify/assessments/offline-mode/`, ending in a
-**go / needs-clarification / kill** decision. Resolve unknowns by refining the
-existing Markdown artifacts directly or with the agent, rather than regenerating
-whole stages. A `go` decision can be handed to `/speckit-specify` if you choose
-to build it; stopping with a documented reason is also a useful result.
-
-[Assessment walkthrough](https://github.github.io/spec-kit/guides/assessment.html) ·
-[Command reference](https://github.github.io/spec-kit/reference/agentic-assessment.html)
-
-<a id="-making-spec-kit-your-own-extensions--presets"></a>
-<a id="-bundles-role-based-setups"></a>
-<a id="-community"></a>
-
-## Customize or bring your own process
-
-**Extensions** add capabilities, **presets** adapt existing behavior,
-**workflows** automate steps, and **bundles** package a role-based setup.
-Use project-local overrides for one-off template changes.
-
-[Customization guide](https://github.github.io/spec-kit/guides/customization.html) ·
-[Community extensions, presets, bundles, and walkthroughs](https://github.github.io/spec-kit/community/overview.html)
-
-<a id="-specify-cli-reference"></a>
-<a id="available-slash-commands"></a>
-<a id="-learn-more"></a>
-<a id="-core-philosophy"></a>
-<a id="-development-phases"></a>
-<a id="-experimental-goals"></a>
-<a id="-video-overview"></a>
-<a id="-does-spec-kit-use-spec-kit"></a>
-
-## Documentation
-
-- [CLI reference](https://github.github.io/spec-kit/reference/overview.html) and [process commands](https://github.github.io/spec-kit/reference/agentic-sdd.html#command-overview)
-- [SDD philosophy](https://github.github.io/spec-kit/concepts/sdd.html), [full methodology](./spec-driven.md), and [evolving existing specs](https://github.github.io/spec-kit/guides/evolving-specs.html)
-- [Video overview](https://github.github.io/spec-kit/quickstart.html#video-overview) and [project history](https://github.github.io/spec-kit/history.html)
-- [How Spec Kit uses Spec Kit](./CONTRIBUTING.md#does-spec-kit-use-spec-kit)
-
-## Star history
-
-<p align="center">
-    <a href="https://www.star-history.com/#github/spec-kit&Date">
-        <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=github%2Fspec-kit&type=Date&theme=dark"/>
-            <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=github%2Fspec-kit&type=Date"/>
-            <img src="https://api.star-history.com/svg?repos=github%2Fspec-kit&type=Date" alt="Spec Kit star history chart"/>
-        </picture>
-    </a>
-</p>
-
-<p align="center">
-    <em>Thanks to everyone who helps Spec Kit shine.</em>
-</p>
-
-<a id="-support"></a>
-
-## Support and contributing
-
-[Report a bug or request a feature](https://github.com/github/spec-kit/issues/new) ·
-[Contributing guide](./CONTRIBUTING.md) · [Code of conduct](./CODE_OF_CONDUCT.md)
-
-<a id="-license"></a>
-
-Spec Kit is [MIT licensed](./LICENSE).
+MIT, same as upstream Spec Kit. See [LICENSE](./LICENSE).
