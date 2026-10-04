@@ -12,12 +12,22 @@ guidelines:
 ```bash
 specify init --here --integration claude
 specify preset add --dev /path/to/jy-spec-kit/presets/serichai
+cp /path/to/jy-spec-kit/presets/serichai/agents/*.md .claude/agents/   # generic agents
 ```
 
-## Angular + FastAPI overlay (optional)
+Presets don't register agents, so the copy step is manual.
 
-`overlays/angular-fastapi/` holds the stack-specific pieces from the Serichai Web Portal:
-`backend-engineer`, `frontend-engineer`, `solution-architect` agents (copy to
-`.claude/agents/`), a mandatory-contracts `plan-template`/`contracts-template` (copy to
-`.specify/templates/overrides/`), and the full project constitution (a starting point
-for `/speckit-constitution`). Edit paths and rules for your project after copying.
+## Agents are stack-neutral
+
+`backend-engineer`, `frontend-engineer` and `solution-architect` hold no framework
+knowledge. They read the constitution's **Technology Standards** section (one entry per
+area: path, stack, hard constraints, reference code, quality gates, verification) and
+obey it. Run `/speckit-constitution` after installing and fill that section in for your
+stack; if it is missing the agents stop and report instead of guessing.
+
+## Angular + FastAPI example
+
+`overlays/angular-fastapi/` shows a filled-in constitution (its Technology Standards
+section holds the Angular and FastAPI rules) plus the mandatory-contracts
+`plan-template` and `contracts-template` (copy to `.specify/templates/overrides/`).
+Use it as a reference or starting point; edit paths and rules for your project.

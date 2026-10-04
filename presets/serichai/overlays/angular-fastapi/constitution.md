@@ -199,6 +199,52 @@ behavior) in a few words, and is done only when that check passes.
 Rationale: Most LLM-assisted coding failures are overbuilding, collateral edits, and
 unstated guesses; naming a concrete check per task makes "done" falsifiable.
 
+## Technology Standards
+
+Read by the `backend-engineer`, `frontend-engineer` and `solution-architect` agents.
+
+### Area: backend — role: backend
+
+- **Path**: `backend/`
+- **Stack**: FastAPI + Pydantic, Python 3.13.
+- **Hard constraints**: thin router in `backend/routers/<name>.py`, logic in
+  `backend/services/<name>_service.py`; every request/response model uses a camelCase
+  `alias_generator` (`to_camel`) + `populate_by_name=True`; type hints on every
+  signature; dependencies via `Depends`; kebab-case resource-named endpoint paths (verb
+  implied by HTTP method); never import `frontend/` code. Employee-benefit data uses
+  Thai headers and Buddhist Era years (BE = Gregorian + 543) — preserve in
+  `accounts_service.py` and related date logic.
+- **Reference code**: `backend/routers/accounts.py`,
+  `backend/services/accounts_service.py`,
+  `backend/services/payroll_reconcile_service.py`; tests in `backend/tests/`.
+- **Quality gates**: type hints honored; tests for business logic.
+- **Verification**: run `uvicorn main:app --reload` and call the endpoint.
+
+### Area: frontend — role: frontend
+
+- **Path**: `frontend-ng/` (renamed `frontend/` at the spec 007 cutover); the legacy
+  React app in `frontend/` is frozen.
+- **Stack**: Angular + TypeScript `strict`/`strictTemplates`, standalone zoneless
+  components, signals, Tailwind v4 + DaisyUI.
+- **Hard constraints**: Angular `HttpClient` is the sole server-state layer — HTTP calls
+  live in `features/<name>/<name>.service.ts`, components consume them through
+  `apiCall` (`@core/http/api-call`); structure `core/` · `shared/` · `features/` (features
+  never import features; `shared` never imports `core`/`features`); use `@/`, `@core/`,
+  `@shared/`, `@features/` aliases; models camelCase matching the wire format; DaisyUI
+  first, colors/type via `var(--...)` tokens in `src/styles.css`; Tailwind class order
+  Layout → Sizing → Typography → Colors & Effects → States; never import `backend/`.
+- **Reference code**: `src/app/core/http/api-call.ts`,
+  `src/app/features/employee-benefits/`, `src/styles.css`.
+- **Quality gates**: `ng build`, `ng lint`, `ng test --watch=false` must pass.
+- **Verification**: `npm start` with uvicorn running; exercise golden path and edge
+  cases in a browser.
+
+### Cross-area contract
+
+HTTP only. One `contracts/<resource>-api.md` per endpoint touched (built from
+`.specify/templates/contracts-template.md`), summarized in `plan.md`'s "API Contracts"
+section. JSON bodies and multipart field names are camelCase.
+
 ## Development Workflow
 
 Commit messages, naming conventions, and branching strategy are shared repo-wide;
