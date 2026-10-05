@@ -11,14 +11,14 @@ guidelines:
 
 ```bash
 specify init --here --integration claude
-specify preset add --dev /path/to/jy-spec-kit/presets/serichai
-cp /path/to/jy-spec-kit/presets/serichai/agents/*.md .claude/agents/   # generic agents
+specify preset add --dev /path/to/spec-kit/presets/serichai
+cp /path/to/spec-kit/presets/serichai/agents/*.md .claude/agents/   # generic agents
 ```
 
 Presets don't register agents, skills, hooks or workflows, so those copy steps are manual:
 
 ```bash
-P=/path/to/jy-spec-kit
+P=/path/to/spec-kit
 cp -r $P/presets/serichai/skills/*  .claude/skills/        # /speckit-elaboration, /speckit-execution
 mkdir -p .claude/hooks .specify/workflows/serichai-sdd
 cp $P/presets/serichai/hooks/*.mjs  .claude/hooks/         # compact-context (+ _lib)

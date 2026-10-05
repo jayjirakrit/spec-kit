@@ -50,12 +50,12 @@ the main place to catch wrong approaches before any code is written.
 ```bash
 # 1. Spec Kit CLI and this fork
 uv tool install specify-cli
-git clone -b serichai/custom https://github.com/jayjirakrit/jy-spec-kit.git
+git clone -b serichai/custom https://github.com/jayjirakrit/spec-kit.git
 
 # 2. In your project
 specify init --here --integration claude
-specify preset add --dev /path/to/jy-spec-kit/presets/serichai
-cp /path/to/jy-spec-kit/presets/serichai/agents/*.md .claude/agents/
+specify preset add --dev /path/to/spec-kit/presets/serichai
+cp /path/to/spec-kit/presets/serichai/agents/*.md .claude/agents/
 ```
 
 Then run `/speckit-constitution` in your agent and fill in the **Technology Standards**
