@@ -7,8 +7,8 @@ If a `business-analyst` agent is available, writing the spec is delegated to it:
 2. Dispatch one `business-analyst` subagent with SPEC_FILE, FEATURE_DIR, the resolved
    spec-template path and the full feature description. It performs steps 4-8 (fill the
    spec, write and validate `checklists/requirements.md`).
-3. If it returns clarification questions, ask the user them together (at most 3, with
-   its suggested answers as options), then re-dispatch `business-analyst` with the
+3. Read its fixed report block. If `OPEN QUESTIONS` is not `none`, ask the user all of
+   them together (at most 3, with its suggested answers as options), then re-dispatch `business-analyst` with the
    answers so it updates the spec and checklist.
 4. Continue here with the Mandatory Post-Execution Hooks and Completion Report.
 

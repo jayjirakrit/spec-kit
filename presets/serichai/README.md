@@ -15,7 +15,20 @@ specify preset add --dev /path/to/jy-spec-kit/presets/serichai
 cp /path/to/jy-spec-kit/presets/serichai/agents/*.md .claude/agents/   # generic agents
 ```
 
-Presets don't register agents, so the copy step is manual.
+Presets don't register agents, skills, hooks or workflows, so those copy steps are manual:
+
+```bash
+P=/path/to/jy-spec-kit
+cp -r $P/presets/serichai/skills/*  .claude/skills/        # /speckit-elaboration, /speckit-execution
+mkdir -p .claude/hooks .specify/workflows/serichai-sdd
+cp $P/presets/serichai/hooks/*.mjs  .claude/hooks/         # compact-context (+ _lib)
+cp -r $P/workflows/serichai-sdd/*   .specify/workflows/serichai-sdd/
+```
+
+The `/speckit-elaboration` and `/speckit-execution` skills are orchestrators (specify ->
+plan -> tasks with review gates; implement <-> converge with quality verification and a
+human gate). Their commit-convention and path wording follows the Serichai portal, so
+adjust it for another project.
 
 ## Agents
 
@@ -44,3 +57,15 @@ stack; if it is missing the agents stop and report instead of guessing.
 section holds the Angular and FastAPI rules) plus the mandatory-contracts
 `plan-template` and `contracts-template` (copy to `.specify/templates/overrides/`).
 Use it as a reference or starting point; edit paths and rules for your project.
+
+The overlay also has `claude/` (`settings.json` plus the project-specific `guard-paths`
+and `lint-frontend` hooks, which expect the portal's `frontend-ng/` and `backend/data/`
+layout). Copy `claude/settings.json` to `.claude/settings.json` and `claude/hooks/*` to
+`.claude/hooks/` if you want the same guardrails.
+
+## Quality verification
+
+`/speckit-implement` pipelines `quality-engineer` per area (`SCOPE: backend|frontend`),
+then runs one `SCOPE: integration` pass that merges the area reports into
+`quality-report.md`. Re-checks use `MODE: delta`. The agent is read-only
+(`disallowedTools: Edit, NotebookEdit`).

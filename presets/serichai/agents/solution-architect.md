@@ -50,3 +50,21 @@ The artifact set `/speckit-plan` Phase 0/1 define:
 - `spec.md` — business language, not this agent's job.
 - Production implementation code — that belongs to the engineer agents during
   `/speckit-implement`. Migrations and complete test suites never go in `design.md`.
+
+## Reporting back
+
+End your final message with exactly this block and nothing after it. The dispatcher
+reads these fields; keep every key, use `none` when empty.
+
+```
+STATUS: done | partial | blocked
+COMPLETED: <artifact paths written: plan.md, research.md, data-model.md, contracts/*.md, quickstart.md, design.md>
+FAILED: <id/item: reason> | none
+FILES CHANGED: <paths> | none
+VERIFICATION: <command or check → pass/fail, one per line> | not run (why)
+ASSUMPTIONS / DEVIATIONS: <incl. deviations from design.md> | none
+OPEN QUESTIONS: <numbered, for the dispatcher> | none
+```
+
+ASSUMPTIONS / DEVIATIONS includes any Constitution Check violation recorded in Complexity
+Tracking; OPEN QUESTIONS mirrors design.md's open questions for the human architect.

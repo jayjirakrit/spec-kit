@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+- Version change: 2.3.0 → 2.4.0 (MINOR: quality verification)
+- Modified: Principle VI — a feature is done only when quality-report.md is PASS or
+  PASS WITH NOTES. Technology Standards — Test patterns bullet per area.
+- Agents added: business-analyst (/speckit-specify), quality-engineer (end of
+  /speckit-implement).
+
+Sync Impact Report (previous)
+- Version change: 2.2.0 → 2.3.0 (MINOR: Technology Standards section added)
+- Added section: Technology Standards — per-area (backend, frontend) stack, constraints,
+  reference code, gates and verification. Agents in .claude/agents/ are now stack-neutral
+  and read this section instead of hardcoding Angular/FastAPI.
+
+Sync Impact Report (previous)
 - Version change: 2.1.0 → 2.2.0 (MINOR: new principle VI)
 - Added principles: VI. Simple, Surgical, Verifiable Changes — simplicity, surgical edits,
   surfaced assumptions, and a verification check per task (adapted from the Karpathy
@@ -291,4 +304,4 @@ the current version of this file before implementation tasks are generated. A pl
 cannot satisfy a principle must either be revised or document the deviation with an
 explicit rationale in its Complexity Tracking section.
 
-**Version**: 2.2.0 | **Ratified**: 2026-08-18 | **Last Amended**: 2026-10-04
+**Version**: 2.4.0 | **Ratified**: 2026-08-18 | **Last Amended**: 2026-10-04

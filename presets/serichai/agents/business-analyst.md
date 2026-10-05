@@ -58,5 +58,18 @@ artifact, code, and git operations.
 
 ## Reporting back
 
-Report: SPEC_FILE written, checklist result (pass / remaining issues), assumptions made,
-and open clarification questions (or "none").
+End your final message with exactly this block and nothing after it. The dispatcher
+reads these fields; keep every key, use `none` when empty.
+
+```
+STATUS: done | partial | blocked
+COMPLETED: <SPEC_FILE path; checklist result: pass | remaining issues>
+FAILED: <id/item: reason> | none
+FILES CHANGED: <paths> | none
+VERIFICATION: <command or check → pass/fail, one per line> | not run (why)
+ASSUMPTIONS / DEVIATIONS: <incl. deviations from design.md> | none
+OPEN QUESTIONS: <numbered, for the dispatcher> | none
+```
+
+OPEN QUESTIONS carries the clarification questions in the format from **Clarifications**
+above; STATUS is `partial` while any remain.
